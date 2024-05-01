@@ -25,6 +25,11 @@
                         "git_sha": "487d92367b4d7bb9f1ca694bf72736be90720b15",
                         "installed_by": ["modules"]
                     },
+                    "bcftools/view": {
+                        "branch": "master",
+                        "git_sha": "1013101da4252623fd7acf19cc581bae91d4f839",
+                        "installed_by": ["modules"]
+                    },
                     "fastqc": {
                         "branch": "master",
                         "git_sha": "f4ae1d942bd50c5c0b9bd2de1393ce38315ba57c",
