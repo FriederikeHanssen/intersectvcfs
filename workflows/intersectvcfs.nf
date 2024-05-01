@@ -8,6 +8,7 @@ include { BCFTOOLS_ISEC   } from '../modules/nf-core/bcftools/isec/main'
 include { BCFTOOLS_NORM   } from '../modules/nf-core/bcftools/norm/main'
 include { BCFTOOLS_SORT   } from '../modules/nf-core/bcftools/sort/main'
 include { BCFTOOLS_VIEW   } from '../modules/nf-core/bcftools/view/main'
+include { TABIX_TABIX     } from '../modules/nf-core/tabix/tabix/main'
 include { MULTIQC                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap       } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc   } from '../subworkflows/nf-core/utils_nfcore_pipeline'
@@ -47,10 +48,13 @@ workflow INTERSECTVCFS {
             [meta + [caller: 'mutect2'], mutect2, mutect2_tbi]
         }
 
-    BCFTOOLS_VIEW(BCFTOOLS_CONCAT.out.vcf.join(BCFTOOLS_CONCAT.out.tbi).mix(mutect2_vcfs))
+    BCFTOOLS_VIEW(BCFTOOLS_CONCAT.out.vcf.join(BCFTOOLS_CONCAT.out.tbi).mix(mutect2_vcfs), [],[],[])
     ch_versions = ch_versions.mix(BCFTOOLS_VIEW.out.versions)
 
-    BCFTOOLS_NORM(BCFTOOLS_FILTER.out.vcf.join(BCFTOOLS_FILTER.out.tbi))
+    TABIX_TABIX(BCFTOOLS_VIEW.out.vcf)
+    ch_versions = ch_versions.mix(TABIX_TABIX.out.versions)
+
+    BCFTOOLS_NORM(BCFTOOLS_VIEW.out.vcf.join(TABIX_TABIX.out.tbi))
     ch_versions = ch_versions.mix(BCFTOOLS_NORM.out.versions)
 
     BCFTOOLS_SORT(BCFTOOLS_NORM.out.vcf)
